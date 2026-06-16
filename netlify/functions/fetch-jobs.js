@@ -1,4 +1,4 @@
-const GHL_TOKEN = 'pit-7017ee64-be60-47b7-bb33-54a2c07806ad';
+const GHL_TOKEN = 'pit-40e675a1-c57f-4f50-8958-7c234c273313';
 const GHL_VERSION = '2021-07-28';
 const LOCATION_ID = 'j0HO2JPPof9rG52GRAFg';
 const PIPELINE_ID = '8jfxwqFFb2hE3xymNq4A';
