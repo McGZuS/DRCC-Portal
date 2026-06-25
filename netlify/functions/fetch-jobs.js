@@ -9,17 +9,15 @@ exports.handler = async function(event) {
     'Access-Control-Allow-Headers': 'Content-Type',
     'Content-Type': 'application/json'
   };
-
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 200, headers, body: '' };
   }
-
   try {
     const { token } = JSON.parse(event.body || '{}');
     if (!token) return { statusCode: 400, headers, body: JSON.stringify({ error: 'No token' }) };
 
     const resp = await fetch(
-      'https://services.leadconnectorhq.com/opportunities/search?location_id=' + LOCATION_ID + '&pipeline_id=' + PIPELINE_ID + '&limit=100',
+      'https://services.leadconnectorhq.com/opportunities/search?location_id=' + LOCATION_ID + '&pipeline_id=' + PIPELINE_ID + '&limit=100&status=all',
       {
         headers: {
           'Authorization': 'Bearer ' + GHL_TOKEN,
@@ -28,20 +26,16 @@ exports.handler = async function(event) {
         }
       }
     );
-
     if (!resp.ok) throw new Error('GHL error: ' + resp.status);
     const data = await resp.json();
     const opps = data.opportunities || [];
-
     const matched = opps.filter(function(o) {
       const email = (o.contact && o.contact.email) || o.contactEmail || '';
       return email.toLowerCase() === token.toLowerCase();
     });
-
     if (!matched.length) {
       return { statusCode: 200, headers, body: JSON.stringify({ error: 'No projects found' }) };
     }
-
     const contact = matched[0].contact || {};
     return {
       statusCode: 200,
@@ -52,7 +46,6 @@ exports.handler = async function(event) {
         jobs: matched
       })
     };
-
   } catch (err) {
     return { statusCode: 500, headers, body: JSON.stringify({ error: err.message }) };
   }
